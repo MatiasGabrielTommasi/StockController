@@ -1,3 +1,26 @@
+CREATE OR REPLACE FUNCTION products_list(
+	IN p_id_product INTEGER
+	,IN p_product_name TEXT
+	,IN p_stock INTEGER
+	,IN p_code TEXT
+) RETURNS products as
+$$
+	SELECT id_product, product_name, price, stock, code FROM Products
+	WHERE
+	(id_product = p_id_product or p_id_product = 0 or p_id_product IS NULL) and
+	(product_name = p_product_name or p_product_name = '' or p_product_name IS NULL) and
+	(stock = p_stock or p_stock = 0 or p_stock IS NULL) and
+	(code = p_code or p_code = '' or p_code IS NULL)
+$$ LANGUAGE sql STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION products_list_low_stock(
+) returns setof products as
+$$
+	SELECT id_product, product_name, price, stock, code FROM Products
+	WHERE
+	stock <= 5
+$$ LANGUAGE sql STABLE STRICT;
+
 CREATE OR REPLACE FUNCTION products_ins(
     IN p_product_name TEXT
     ,IN p_price NUMERIC(18, 2)
