@@ -1,12 +1,17 @@
 package ar.com.playmedia.model;
 
 public class PersonM{
-    protected int personId;
-    protected String name;
-    protected String surname; 
-    protected String phone;
+    private int personId;
+    private String name;
+    private String surname; 
+    private String phone;
     
-    public PersonM(){}
+    public PersonM(){
+        this.personId = 0;
+        this.name = "";
+        this.surname = "";
+        this.phone = "";
+    }
 
     public PersonM(int personId, String name, String surname, String phone){
         this.personId = personId;
@@ -28,7 +33,7 @@ public class PersonM{
     }
 
     public String getSurname(){
-        return name;
+        return surname;
     }
 
     public void setPersonId(int id){
