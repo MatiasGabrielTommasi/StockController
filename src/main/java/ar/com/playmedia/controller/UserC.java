@@ -103,7 +103,6 @@ public class UserC{
         try{
             query = dbConnection.createStatement();
             result = query.executeQuery(queryString);
-
             while(result.next()){
                 int dni = result.getInt(1);
                 String name = result.getString(2);
