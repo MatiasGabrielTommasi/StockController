@@ -42,7 +42,8 @@ public class ProductM{
     }
 
     public String toString(){
-        return String.format("%d\t\t%s\t\t%f\t\t%d\t\t%s", this.intIdProduct, this.strName, this.floPrice, this.intStock.toString(), this.strCode);
+        return String.format("%d\t\t%s\t\t%f\t\t%d\t\t%s"
+        , this.intIdProduct, this.strName, this.floPrice, this.intStock, this.strCode);
     }
 
     public String toTicketString(){

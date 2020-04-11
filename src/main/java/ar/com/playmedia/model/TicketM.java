@@ -49,14 +49,15 @@ public class TicketM{
     }
 
     public String toReportString(){
-        return String.format("%d\t%t\t%d\t%f\t%s", this.intIdTicket, this.datTicketDate, this.iProducts.size(), this.floMount, this.oUser.getName());
+        String result = String.format("%d\t%s\t%s\t%s", this.intIdTicket, this.datTicketDate.toLocaleString(), this.floMount.toString(), this.oUser.getName()); 
+        return result;
     }
 
     public String toDetailString(){
         String result = String.format("Detalle del tikcet $d\n\r", this.intIdTicket);
-
         for(ProductM product : this.iProducts){
-            result += String.format("\t(%d) %s\t\t$%f\n\r", product.getIntStock(), product.getStrName(), product.getFloPrice());
+            this.floMount = this.floMount + (product.getIntStock() * product.getFloPrice());
+            result += String.format("\t(%d) %s\t\t$%s\n\r", product.getIntStock(), product.getStrName(), product.getFloPrice().toString());
         }
 
         result += String.format("TOTAL: $%f", this.floMount);
