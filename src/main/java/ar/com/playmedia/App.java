@@ -4,6 +4,8 @@ import java.util.Scanner;
 import ar.com.playmedia.model.UserM;
 import ar.com.playmedia.utilities.*;
 import ar.com.playmedia.view.ProductV;
+import ar.com.playmedia.view.TicketV;
+import ar.com.playmedia.view.UserV;
 
 public class App
 {
@@ -19,6 +21,7 @@ public class App
             System.out.println("Bienvenido a Stock Controller");
             System.out.println("*************************************\r\n");
             System.out.println("\t1 - Iniciar Sesion");
+            System.out.println("\t2 - Registrarse");
             System.out.println();
             System.out.println("\t0 - Salir");
 
@@ -28,36 +31,25 @@ public class App
                 intOption = -1;
             }
 
+            UserV view = new UserV();
+
             switch (intOption) {
                 case 1:
-                    loginMenu(oScanner);
+                    oUserM = view.logIn();
+                    if(oUserM == null){
+                        System.out.println("Error al iniciar sesion, revisa usuario o contraseña.");
+                    }else{
+                        mainMenu(oScanner);
+                    }
                     intOption = -1;
                     break;
+                case 2:
+                    view.signUp();
+                    intOption = -1;
             }
         }
         Utilities.clearConsole();
         System.out.println("Gracias por utilizar Stock Controller");
-    }
-    public static void loginMenu(Scanner oScanner){
-        //TODO enlazar con el metodo login en el view de UsuarioV
-        //debe devolver un objeto del tipo usuario completo si usuario y pass es corecto
-        // o null si no se inicio sesion
-
-        // UserV oUserV = new UserV(oScanner);
-        // oUserM = oUserV.loginMenu();
-        if(oUserM != null){
-            System.out.println("Error al iniciar sesion, revisa usuario o contraseña.");
-        }else{//TODO este es el menu para iniciar sesion
-            Utilities.clearConsole();
-            System.out.print("Usuario:  ");
-            String strUser = oScanner.nextLine();
-            System.out.println();
-            System.out.print("Contraseña:  ");
-            String strPass = oScanner.nextLine();
-            //TODO llamar al controlador de user para obtener el usuario desde la base de datos
-            oUserM = new UserM();//esto lo puse para continuar con la programacion
-            mainMenu(oScanner);
-        }
     }
     public static void mainMenu(Scanner oScanner){
         Integer intOption = -1;
@@ -74,7 +66,7 @@ public class App
             System.out.println("\t1 - Ventas");
             System.out.println("\t2 - Productos");
             System.out.println("\t3 - Usuarios");
-            System.out.println("\t4 - Bitacora");
+            //System.out.println("\t4 - Bitacora");
             System.out.println();
             System.out.println("\t0 - Salir");
             try {
@@ -85,8 +77,8 @@ public class App
 
             switch (intOption) {
                 case 1:
-                    // TicketV oTocketV = new oTicketV(oUserM, oScanner);
-                    // oTicketV.mainMenu();
+                    TicketV oTicketV = new TicketV(oUserM, oScanner);
+                    oTicketV.mainMenu();
                     intOption = -1;
                     break;
                 case 2:
@@ -95,13 +87,8 @@ public class App
                     intOption = -1;
                     break;
                 case 3:
-                    // UsuarioV oUsuarioV = new UsuarioV(oUserM, oScanner);
-                    // oUsuarioV.mainMenu();
-                    intOption = -1;
-                    break;
-                case 4:
-                    // BitacoraV oBitacoraV = new BitacoraV(oUserM, oScanner);
-                    // oBitacoraV.mainMenu();
+                    UserV oUserV = new UserV();
+                    oUserV.userMenu();
                     intOption = -1;
                     break;
                 case 0:
