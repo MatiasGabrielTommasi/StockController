@@ -10,6 +10,7 @@ DROP FUNCTION IF EXISTS users_set_username;
 DROP FUNCTION IF EXISTS users_set_pass;
 drop FUNCTION if exists tickets_ins;
 drop FUNCTION if exists tickets_products_ins;
+drop function if exists tickets_week;
 DROP function if exists products_list;
 DROP FUNCTION if exists products_list_low_stock;
 DROP FUNCTION if exists products_ins;
@@ -265,12 +266,15 @@ $$
 	insert into tickets_products (id_ticket, id_product, price, quantity) values (p_id_ticket, p_id_product, p_price, p_quantity);
 $$ LANGUAGE sql VOLATILE strict;
 
-   
 
-
-
-
-
-
+CREATE OR REPLACE FUNCTION tickets_week(
+) returns setof tickets as
+$$
+    select *
+	from tickets t 
+	where t.ticket_date between	
+	(current_date - (extract(dow from current_date)::integer)) and 
+	(current_date - (extract(dow from current_date + 1)::integer)) 
+$$ LANGUAGE sql STABLE STRICT;
 
 
