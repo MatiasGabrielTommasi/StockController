@@ -38,9 +38,34 @@ public class UserM extends PersonM{
     }  
     
     public String toString(){
-        String user = "";
-        user = String.format("%s  %s  %s  %s  %s"
-        , this.getPersonId(), this.getSurname(), this.getName(), this.getPhone(), this.user);
-        return user;
+        String result = "";
+        String dni = String.valueOf(this.getPersonId());
+        String surname = this.getSurname();
+        String name = this.getName();
+        String user = this.getUser();
+        String phone = this.getPhone();
+        int aux = dni.length();
+        for(int i = aux;i<12;i++)
+            dni = dni + " ";
+        
+        aux = surname.length();
+        for(int i = aux;i<25;i++)
+            surname = surname + " ";
+                
+        aux = name.length();
+        for(int i = aux;i<20;i++)
+            name = name + " ";
+            
+        aux = user.length();
+        for(int i = aux;i<20;i++)
+            user = user + " ";
+            
+        aux = phone.length();
+        for(int i = aux;i<15;i++)
+            phone = phone + " ";
+
+        //System.out.println("12|25|20|20|15");
+        result = String.format("%s%s%s%s%s", dni, surname, name, user, phone);
+        return result;
     }
 }

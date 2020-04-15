@@ -1,6 +1,8 @@
 package ar.com.playmedia.model;
 
-public class ProductM{
+import java.text.DecimalFormat;
+
+public class ProductM {
     private Integer intIdProduct;
     private String strName;
     private Float floPrice;
@@ -41,12 +43,56 @@ public class ProductM{
         this.intStock = intStock;
     }
 
-    public String toString(){
-        return String.format("%d\t\t%s\t\t%f\t\t%d\t\t%s"
-        , this.intIdProduct, this.strName, this.floPrice, this.intStock, this.strCode);
+    public String toString(){        
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        String result = "";
+        String id = String.valueOf(this.intIdProduct);
+        String name = this.strName;
+        String price = decimalFormat.format(this.floPrice);
+        String code = this.strCode;
+        String stock = String.valueOf(this.intStock);
+
+        int aux = id.length();
+        for(int i = aux;i<6;i++)
+            id = id + " ";
+                
+        aux = name.length();
+        for(int i = aux;i<35;i++)
+            name = name + " ";
+        
+        aux = price.length();
+        for(int i = aux;i<8;i++)
+            price = price + " ";
+            
+        aux = code.length();
+        for(int i = aux;i<15;i++)
+            code = code + " ";
+            
+        aux = stock.length();
+        for(int i = aux;i<5;i++)
+            stock = stock + " ";
+
+        //System.out.println("id 6|nombre 35|precio 8|codigo 15|stock 5");
+        result = String.format("%s%s%s%s%s", id, name, price, code, stock);
+        return result;
     }
 
     public String toTicketString(){
-        return String.format("%d\t%s\t\t%f", this.intStock, this.strName, this.floPrice);
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        String result = "";
+        String product = String.format("%s (%s)", String.valueOf(this.intIdProduct), String.valueOf(this.intStock));
+        String price = decimalFormat.format(this.floPrice * this.intStock);
+
+        int aux = product.length();
+        for(int i = aux;i<45;i++)
+            product = product + " ";
+                
+        aux = price.length();
+        for(int i = aux;i<10;i++)
+            price = " " + price;
+            
+        //System.out.println("producto 45|precio 10");
+        result = String.format("%s%s", product, price);
+        return result;
     }
 }

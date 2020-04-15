@@ -1,6 +1,7 @@
 package ar.com.playmedia.model;
 
 import java.util.Date;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import ar.com.playmedia.model.ProductM;
 
@@ -49,18 +50,43 @@ public class TicketM{
     }
 
     public String toReportString(){
-        String result = String.format("%d\t%s\t%s\t%s", this.intIdTicket, this.datTicketDate.toLocaleString(), this.floMount.toString(), this.oUser.getName()); 
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00"); 
+        String id = String.valueOf(this.intIdTicket);
+        String mount = decimalFormat.format(this.floMount);
+        String date = this.datTicketDate.toString();
+        String vendor = String.valueOf(this.oUser.getName());
+
+        int aux = id.length();
+        for(int i = aux;i<8;i++)
+            id = id + " ";
+                
+        aux = mount.length();
+        for(int i = aux;i<9;i++)
+            mount = " " + mount;
+        
+        aux = date.length();
+        for(int i = aux;i<12;i++)
+            date = date + " ";
+            
+        aux = vendor.length();
+        for(int i = aux;i<25;i++)
+            vendor = vendor + " ";
+            
+        //System.out.println("ID      8|fecha       12|monto     10|vendedor                 25|");
+        String result = String.format("%s%s$%s     %s", id, date, mount, vendor); 
         return result;
     }
 
     public String toDetailString(){
-        String result = String.format("Detalle del tikcet $d\n\r", this.intIdTicket);
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        String result = "Detalle del tikcet\n\r";
+        result = result + "PRODUCTO                                     PRECIO    |\n\r";
         for(ProductM product : this.iProducts){
             this.floMount = this.floMount + (product.getIntStock() * product.getFloPrice());
-            result += String.format("\t(%d) %s\t\t$%s\n\r", product.getIntStock(), product.getStrName(), product.getFloPrice().toString());
+            result += product.toTicketString() + "\n\r";
         }
 
-        result += String.format("TOTAL: $%f", this.floMount);
+        result += String.format("TOTAL: $%s", decimalFormat.format(this.floMount));
         return result;
     }
 }
