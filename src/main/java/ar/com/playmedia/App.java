@@ -26,18 +26,20 @@ public class App
             System.out.println("\t0 - Salir");
 
             try {
-                intOption = Integer.valueOf(oScanner.nextLine());                
+                intOption = Utilities.getNumeric(oScanner, 2);               
             } catch (Exception e) {
                 intOption = -1;
             }
 
-            UserV view = new UserV();
+            UserV view = new UserV(oScanner);
 
             switch (intOption) {
                 case 1:
                     oUserM = view.logIn();
                     if(oUserM == null){
+                        Utilities.clearConsole();
                         System.out.println("Error al iniciar sesion, revisa usuario o contraseña.");
+                        oScanner.nextLine();
                     }else{
                         mainMenu(oScanner);
                     }
@@ -70,7 +72,7 @@ public class App
             System.out.println();
             System.out.println("\t0 - Salir");
             try {
-                intOption = Integer.valueOf(oScanner.nextLine());                
+                intOption = Utilities.getNumeric(oScanner, 3);                 
             } catch (Exception e) {
                 intOption = -1;
             }
@@ -87,7 +89,7 @@ public class App
                     intOption = -1;
                     break;
                 case 3:
-                    UserV oUserV = new UserV();
+                    UserV oUserV = new UserV(oScanner, oUserM);
                     oUserV.userMenu();
                     intOption = -1;
                     break;
