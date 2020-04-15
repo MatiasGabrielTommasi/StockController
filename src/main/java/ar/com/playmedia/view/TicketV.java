@@ -23,7 +23,7 @@ public class TicketV {
         Integer intOption = -1;
         while (intOption != 0) {
             Utilities.clearConsole();
-            System.out.println("Menu de Ventas");
+            System.out.println("Menu de Ventas (Hola " + this.oUserM.getName() + ")");
             System.out.println("*************************************\r\n");
             System.out.println("\t1 - Vender");
             System.out.println("\t2 - Extracto semanal");
@@ -34,7 +34,7 @@ public class TicketV {
             System.out.println("\t0 - Volver al menu principal");
 
             try {
-                intOption = Integer.valueOf(oScanner.nextLine());                
+                intOption = Utilities.getNumeric(oScanner, 2);               
             } catch (Exception e) {
                 intOption = -1;
             }
@@ -60,6 +60,10 @@ public class TicketV {
             iTickets = oTicketC.getWeekTickets();
             oTicketC.disconnect();
 
+            Utilities.clearConsole();
+            System.out.println("ID      FECHA       MONTO          VENDEDOR                 ");
+            System.out.println("==      =====       ==========     ========                 ");
+            System.out.println();
             for(TicketM ticket : iTickets){
                 System.out.println(ticket.toReportString());
             }
@@ -95,19 +99,24 @@ public class TicketV {
             if(enableAdd){
                 ProductC oProductC = new ProductC();
                 oProductC.connect();
-                ProductM oProduct = oProductC.listProduct(new ProductM(0, "", 0f, code, 0)).get(0);
-                oProduct.setIntStock(1);
-                oTicket.getProducts().add(oProduct);
+                ArrayList<ProductM> iProducts = oProductC.listProduct(new ProductM(0, "", 0f, code, 0));
+                if(iProducts.size() > 0){
+                    ProductM oProduct = iProducts.get(0);
+                    oProduct.setIntStock(1);
+                    oTicket.getProducts().add(oProduct);
+                }else{
+                    Utilities.clearConsole();
+                    System.out.println("Producto inexistente");
+                    oScanner.nextLine();
+                }
                 oProductC.disconnect();
             }
 
 
             Utilities.clearConsole();
             System.out.println(oTicket.toDetailString());
-            System.out.println("Agregar otro producto (1 si - 0 no)");
-            String answer = oScanner.nextLine();
-            if(Integer.valueOf(answer) == 0)
-                bitAdd = false;
+            System.out.println("Agregar otro producto?");
+            bitAdd = Utilities.getYesNo(oScanner);
         }
 
         TicketC oTicketC = new TicketC();

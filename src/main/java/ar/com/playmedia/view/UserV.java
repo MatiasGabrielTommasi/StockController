@@ -8,26 +8,33 @@ import ar.com.playmedia.model.UserM;
 import ar.com.playmedia.controller.UserC;
 
 public class UserV{
+    Scanner oScanner = null;
+    UserM oUserM = null;
+
+    public UserV(Scanner oScanner){
+        this.oScanner = oScanner;
+    }
+    
+    public UserV(Scanner oScanner, UserM oUserM){
+        this.oScanner = oScanner;
+        this.oUserM = oUserM;
+    }
 
     public void userMenu(){
-        Scanner keyboard = new Scanner(System.in);
-        
-        ArrayList <UserM> users = new ArrayList<UserM>();
-
         int option = -1;
         while(option != 0){
             Utilities.clearConsole();
-            System.out.println("* Menu de usuarios *");
+            System.out.println("Menu de usuarios (Hola " + this.oUserM.getName() + ")");
+            System.out.println("*************************************\r\n");
+            System.out.println("\t1 - Registrar nuevo usuario.");
+            System.out.println("\t2 - Buscar usuario.");
+            System.out.println("\t3 - Actualizar usuario.");
+            System.out.println("\t4 - Borrar usuario.");
+            System.out.println("\t5 - Mostrar lista de usuarios.");
             System.out.println();
-            System.out.println("1-Registrar nuevo usuario.");
-            System.out.println("2-Buscar usuario.");
-            System.out.println("3-Actualizar usuario.");
-            System.out.println("4-Borrar usuario.");
-            System.out.println("5-Mostrar lista de usuarios.");
-            System.out.println();
-            System.out.println("0-Salir.");
+            System.out.println("\t0 - Salir.");
 
-            option = Integer.parseInt(keyboard.nextLine());
+            option = Utilities.getNumeric(oScanner, 5); 
 
             switch(option){
                 case 1:
@@ -54,14 +61,13 @@ public class UserV{
     }
 
     public UserM logIn(){
-        Scanner keyboard = new Scanner(System.in);
         UserM model = new UserM();
 
         System.out.print("Ingrese su nombre de usuario: ");
-        String userName = keyboard.nextLine();
+        String userName = oScanner.nextLine();
         
         System.out.print("Ingrese su contraseña: ");
-        String password = keyboard.nextLine();
+        String password = oScanner.nextLine();
 
         model.setUser(userName);
         model.setPassword(password);
@@ -75,76 +81,111 @@ public class UserV{
     }
 
     public void signUp(){
-        Scanner keyboard = new Scanner(System.in);
         Utilities.clearConsole();
         
         System.out.print("Ingrese dni: ");
-        int dni = Integer.parseInt(keyboard.nextLine());
+        int dni = Utilities.getNumeric(oScanner);
 
         System.out.print("Ingrese su nombre: ");
-        String name = keyboard.nextLine();
+        String name = oScanner.nextLine();
 
         System.out.print("Ingrese apellido: ");
-        String surname = keyboard.nextLine();
+        String surname = oScanner.nextLine();
 
         System.out.print("Ingrese telefono: ");
-        String phone = keyboard.nextLine();
+        String phone = oScanner.nextLine();
 
         System.out.print("Ingrese su nombre de usuario: ");
-        String username = keyboard.nextLine();
+        String username = oScanner.nextLine();
 
         System.out.print("Ingrese contraseña: ");
-        String password = keyboard.nextLine();
+        String password = oScanner.nextLine();
 
-    
+        Utilities.clearConsole();
         UserC controller = new UserC();
         controller.connect();
-        controller.signUp(dni, name, surname, phone, username, password);
+        try {
+            ArrayList<UserM> exists = controller.searchUsers(new UserM(dni, "", "", "", "", ""));
+            if(exists.size() == 0){
+                controller.signUp(dni, name, surname, phone, username, password);
+                System.out.println("Usuario generado exitosamente");
+            }
+            else{
+                System.out.println("El usuario ya se encuentra registrado");
+            }            
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
         controller.disconnect();
-        System.out.println("Usuario generado exitosamente");
-        keyboard.nextLine();
+        oScanner.nextLine();
     }
 
     private void updateUser(){
-        Utilities.clearConsole();
-        Scanner keyboard = new Scanner(System.in);
+        UserM model = new UserM();
+        UserC oUserC = new UserC();
+        ArrayList<UserM> iUsers = new ArrayList<UserM>();
+        while(iUsers.size() == 0){
+            Utilities.clearConsole();
+            System.out.print("Ingrese el dni del usuario:");
+            int id = Integer.parseInt(oScanner.nextLine());
+            model = new UserM(id, "", "", "", "", "");
+            oUserC.connect();
+            iUsers =  oUserC.searchUsers(model);
+            oUserC.disconnect();
+            if(iUsers.size() == 0){
+                System.out.println("Usuario no encontrado");
+                oScanner.nextLine();
+                return;
+            }
+        }
 
-        System.out.print("Escriba el dni del usuario a actualizar ---> ");
-        int id = Integer.parseInt(keyboard.nextLine());
-        UserM model = new UserM(id, "", "", "", "", "");
+        model = iUsers.get(0);
 
         System.out.println("Que dato quiere actualizar?");
-        System.out.println("1 - Nombre");
-        System.out.println("2 - Apellido");
-        System.out.println("3 - Telefono");
-        System.out.println("4 - Usuario");
-        System.out.println("5 - Contraseña");
+        System.out.println("\t0 - Nombre");
+        System.out.println("\t1 - Apellido");
+        System.out.println("\t2 - Telefono");
+        System.out.println("\t3 - Usuario");
+        System.out.println("\t4 - Contraseña");
 
-        Integer selection = Integer.valueOf(keyboard.nextLine());
+        Integer selection = Utilities.getNumeric(oScanner, 4);
+        switch (selection) {
+            case 0:                
+                System.out.println("Ingrese el Nombre (" + model.getName() + "):");
+                break;                
+            case 1:
+                System.out.println("Ingrese el Apellido (" + model.getSurname() + "):");
+                break;            
+            case 2:
+                System.out.println("Ingrese el Telefono (" + model.getPhone() + "):");
+                break;
+            case 3:
+                System.out.println("Ingrese el Usuario (" + model.getUser() + "):");
+                break;
+            case 4:
+                System.out.println("Ingrese el Contraseña:");
+                break;
+        }
 
-        System.out.println("Ingrese el valor:");
-        String input = keyboard.nextLine();
+        String input = oScanner.nextLine();
 
         UserC controller = new  UserC();
         controller.connect();
         switch (selection) {
-            case 1:
+            case 0:
                 controller.setName(model, input);
                 break;
-            case 2:
+            case 1:
                 controller.setSurname(model, input);
                 break;
-            case 3:   
+            case 2:   
                 controller.setPhone(model, input);                    
                 break;
-            case 4:
+            case 3:
                 controller.setUsername(model, input);
                 break;
-            case 5:
+            case 4:
                 controller.setPassword(model, input);
-                break;
-            default:
-                System.out.println("No selecciono ninguna accion, volviendo al menu anterior");
                 break;
         }
         controller.disconnect();
@@ -153,20 +194,34 @@ public class UserV{
     private void deleteUser(){
         Utilities.clearConsole();
         
-        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Escriba el dni del usuario a eliminar:");
+        int id = Utilities.getNumeric(oScanner);
+        Utilities.clearConsole();
+        System.out.println("Esta seguro de eliminar el usuario?");
+        if(Utilities.getYesNo(oScanner)){
+            UserC controller = new UserC();
+            controller.connect();
+            
+            try {
+                ArrayList<UserM> exists = controller.searchUsers(new UserM(id, "", "", "", "", ""));
+                if(exists.size() > 0){
+                    controller.deleteUser(id);
+                    Utilities.clearConsole();
+                }
+                else{
+                    System.out.println("El usuario ya no se encuentra registrado");
+                }            
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
 
-        System.out.print("Escriba el dni del usuario a eliminar ---> ");
-        int id = Integer.parseInt(keyboard.nextLine());
-
-        UserC controller = new UserC();
-        controller.connect();
-        controller.deleteUser(id);
-        controller.disconnect();
-    }
+            controller.disconnect();
+        }
+        oScanner.nextLine();
+}
 
     private void listUsers(){
         Utilities.clearConsole();
-        Scanner keyboard = new Scanner(System.in);
 
         ArrayList<UserM> users = new ArrayList<UserM>();
 
@@ -175,14 +230,16 @@ public class UserV{
         users = controller.listUsers();
         controller.disconnect();
         
+        System.out.println("DNI         Apellido                 Nombres             Usuario             Telefono       ");        
+        System.out.println("===         ========                 =======             =======             ========       ");
+        System.out.println();
         for(UserM user : users){
             System.out.println(user.toString());
         }
-        keyboard.nextLine();
+        oScanner.nextLine();
     }
     private void searchUsers(){
         Utilities.clearConsole();
-        Scanner keyboard = new Scanner(System.in);
 
         ArrayList<UserM> users = new ArrayList<UserM>();
 
@@ -191,27 +248,31 @@ public class UserV{
         System.out.println("(puede dejar campos en blanco)");
         System.out.println();
 
-        System.out.println("Nombre del usuario:");
-        model.setName(keyboard.nextLine());
+        System.out.println("Nombre:");
+        model.setName(oScanner.nextLine());
 
-        System.out.println("Apellido del usuario:");
-        model.setSurname(keyboard.nextLine());
+        System.out.println("Apellido:");
+        model.setSurname(oScanner.nextLine());
 
-        System.out.println("DNI del usuario:");
-        String personId = keyboard.nextLine();
+        System.out.println("DNI:");
+        String personId = oScanner.nextLine();
         model.setPersonId((personId.equals("")) ? 0 : Integer.valueOf(personId));
 
-        System.out.println("Usuario de usuario:");
-        model.setUser(keyboard.nextLine());
+        System.out.println("Nombre de usuario:");
+        model.setUser(oScanner.nextLine());
 
         UserC usersC = new UserC();
         usersC.connect();
         users = usersC.searchUsers(model);
         usersC.disconnect();
 
+        Utilities.clearConsole();
+        System.out.println("DNI         Apellido                 Nombres             Usuario             Telefono       ");        
+        System.out.println("===         ========                 =======             =======             ========       ");
+        System.out.println();
         for(UserM user : users){
             System.out.println(user.toString());
         }
-        keyboard.nextLine();
+        oScanner.nextLine();
     }
 }
