@@ -1,3 +1,4 @@
+
 DROP FUNCTION IF EXISTS users_ins;
 DROP FUNCTION IF EXISTS users_del;
 DROP FUNCTION IF EXISTS users_list;
@@ -28,7 +29,6 @@ DROP table if exists products;
 
 --select * from tickets t2 
 --"SELECT * from tickets_ins(69.0, 1)"
-create database stockcontroller;
 
 CREATE TABLE products (
     id_product serial NOT NULL,
@@ -53,6 +53,7 @@ $$
     (product_name ilike('%' || p_product_name || '%') or p_product_name = '' or p_product_name IS NULL) and
     (stock >= p_stock or p_stock = 0 or p_stock IS NULL) and
     (code = p_code or p_code = '' or p_code IS NULL)
+    order by id_product asc
 $$ LANGUAGE sql STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION products_list_low_stock(
@@ -61,6 +62,7 @@ $$
     SELECT id_product, product_name, price, stock, code FROM Products
     WHERE
     stock <= 5
+    order by id_product asc
 $$ LANGUAGE sql STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION products_ins(
@@ -163,6 +165,7 @@ $$
     SELECT * FROM users
 $$ LANGUAGE sql STABLE STRICT;
 
+
 CREATE OR REPLACE FUNCTION users_search(    
     p_id_person INTEGER
     ,p_name TEXT
@@ -174,7 +177,7 @@ CREATE OR REPLACE FUNCTION users_search(
 AS $$
     SELECT * FROM users
     WHERE
-    (id_person = id_person or id_person = 0 or id_person IS NULL) and
+    (id_person = p_id_person or p_id_person = 0 or p_id_person IS NULL) and
     (names ilike('%' || p_name || '%') or p_name = '' or p_name IS NULL) and
     (surname ilike('%' || p_surname || '%') or p_surname = '' or p_surname IS NULL) and
     (phone ilike('%' || p_phone || '%') or p_phone = '' or p_phone IS NULL) and
@@ -274,7 +277,5 @@ $$
 	from tickets t 
 	where t.ticket_date between	
 	(current_date - (extract(dow from current_date)::integer)) and 
-	(current_date - (extract(dow from current_date + 1)::integer)) 
+	(current_date + (extract(dow from current_date + 1)::integer)) 
 $$ LANGUAGE sql STABLE STRICT;
-
-
