@@ -11,9 +11,9 @@ import java.sql.DriverManager;
 public class UserC{
 
     Connection dbConnection = null;
-    String url = "jdbc:postgresql://127.0.0.1:5432/StockController";
+    String url = "jdbc:postgresql://127.0.0.1:5432/stockcontroller";
     String dbUser = "dba";
-    String dbPassword = "123456";
+    String dbPassword = "12345678";
     Statement query = null;
     ResultSet result = null;
 
@@ -166,7 +166,7 @@ public class UserC{
 			query.execute(queryString);
 			query.close();
 		} catch (Exception ex){
-
+            System.out.println("No se puso eliminar, el usuario ha generado ventas previamente.");
 		}
     }
 

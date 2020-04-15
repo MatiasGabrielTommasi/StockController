@@ -17,9 +17,9 @@ public class ProductC{
 	private String pass;
 
 	public ProductC() {
-		server = "jdbc:postgresql://127.0.0.1:5432/StockController";
+		server = "jdbc:postgresql://127.0.0.1:5432/stockcontroller";
 		username = "dba";
-		pass = "123456";
+		pass = "12345678";
     }
     
 	public void connect() {	
