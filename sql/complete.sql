@@ -267,6 +267,9 @@ CREATE OR REPLACE FUNCTION tickets_products_ins(
 	) RETURNS void as
 $$ 
 	insert into tickets_products (id_ticket, id_product, price, quantity) values (p_id_ticket, p_id_product, p_price, p_quantity);
+	
+	update products set stock = ((select stock from products where id_product = p_id_product) - p_quantity) where id_product = p_id_product;
+ 
 $$ LANGUAGE sql VOLATILE strict;
 
 
